@@ -10,10 +10,8 @@ import (
 
 // Errors .
 var (
-	ErrMemRead  = errors.New("avif: mem read failed")
-	ErrMemWrite = errors.New("avif: mem write failed")
-	ErrDecode   = errors.New("avif: decode failed")
-	ErrEncode   = errors.New("avif: encode failed")
+	ErrDecode = errors.New("avif: decode failed")
+	ErrEncode = errors.New("avif: encode failed")
 )
 
 // AVIF represents the possibly multiple images stored in a AVIF file.
@@ -53,10 +51,7 @@ func Decode(r io.Reader) (image.Image, error) {
 			return nil, err
 		}
 	} else {
-		ret, _, err = decode(r, false, false)
-		if err != nil {
-			return nil, err
-		}
+		panic("libavif not found")
 	}
 
 	return ret.Image[0], nil
@@ -73,10 +68,7 @@ func DecodeConfig(r io.Reader) (image.Config, error) {
 			return image.Config{}, err
 		}
 	} else {
-		_, cfg, err = decode(r, true, false)
-		if err != nil {
-			return image.Config{}, err
-		}
+		panic("libavif not found")
 	}
 
 	return cfg, nil
@@ -93,10 +85,7 @@ func DecodeAll(r io.Reader) (*AVIF, error) {
 			return nil, err
 		}
 	} else {
-		ret, _, err = decode(r, false, true)
-		if err != nil {
-			return nil, err
-		}
+		panic("libavif not found")
 	}
 
 	return ret, nil
@@ -141,10 +130,7 @@ func Encode(w io.Writer, m image.Image, o ...Options) error {
 			return err
 		}
 	} else {
-		err := encode(w, m, quality, qualityAlpha, speed, chroma)
-		if err != nil {
-			return err
-		}
+		panic("libavif not found")
 	}
 
 	return nil

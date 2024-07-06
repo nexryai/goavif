@@ -196,9 +196,7 @@ func init() {
 	if err == nil {
 		dynamic = true
 	} else {
-		dynamicErr = err
-
-		return
+		panic(err)
 	}
 
 	purego.RegisterLibFunc(&_avifVersion, libavif, "avifVersion")

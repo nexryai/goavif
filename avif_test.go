@@ -20,42 +20,6 @@ var testAvif10 []byte
 //go:embed testdata/test.avifs
 var testAvifAnim []byte
 
-func TestDecode(t *testing.T) {
-	img, _, err := decode(bytes.NewReader(testAvif8), false, false)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	w, err := writeCloser()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer w.Close()
-
-	err = jpeg.Encode(w, img.Image[0], nil)
-	if err != nil {
-		t.Error(err)
-	}
-}
-
-func TestDecode10(t *testing.T) {
-	img, _, err := decode(bytes.NewReader(testAvif10), false, false)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	w, err := writeCloser()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer w.Close()
-
-	err = jpeg.Encode(w, img.Image[0], nil)
-	if err != nil {
-		t.Error(err)
-	}
-}
-
 func TestDecodeDynamic(t *testing.T) {
 	if err := Dynamic(); err != nil {
 		fmt.Println(err)
@@ -99,28 +63,6 @@ func TestDecode10Dynamic(t *testing.T) {
 	err = jpeg.Encode(w, img.Image[0], nil)
 	if err != nil {
 		t.Error(err)
-	}
-}
-
-func TestDecodeAnim(t *testing.T) {
-	ret, _, err := decode(bytes.NewReader(testAvifAnim), false, true)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if len(ret.Image) != len(ret.Delay) {
-		t.Errorf("got %d, want %d", len(ret.Delay), len(ret.Image))
-	}
-
-	if len(ret.Image) != 17 {
-		t.Errorf("got %d, want %d", len(ret.Image), 17)
-	}
-
-	for _, img := range ret.Image {
-		err = jpeg.Encode(io.Discard, img, nil)
-		if err != nil {
-			t.Error(err)
-		}
 	}
 }
 
@@ -187,21 +129,6 @@ func TestImageDecodeAnim(t *testing.T) {
 	}
 }
 
-func TestDecodeConfig(t *testing.T) {
-	_, cfg, err := decode(bytes.NewReader(testAvif8), true, false)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if cfg.Width != 512 {
-		t.Errorf("width: got %d, want %d", cfg.Width, 512)
-	}
-
-	if cfg.Height != 512 {
-		t.Errorf("height: got %d, want %d", cfg.Height, 512)
-	}
-}
-
 func TestDecodeConfigDynamic(t *testing.T) {
 	if err := Dynamic(); err != nil {
 		fmt.Println(err)
@@ -219,24 +146,6 @@ func TestDecodeConfigDynamic(t *testing.T) {
 
 	if cfg.Height != 512 {
 		t.Errorf("height: got %d, want %d", cfg.Height, 512)
-	}
-}
-
-func TestEncode(t *testing.T) {
-	img, err := Decode(bytes.NewReader(testAvif8))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	w, err := writeCloser()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer w.Close()
-
-	err = encode(w, img, DefaultQuality, DefaultQuality, DefaultSpeed, image.YCbCrSubsampleRatio420)
-	if err != nil {
-		t.Fatal(err)
 	}
 }
 
@@ -263,15 +172,6 @@ func TestEncodeDynamic(t *testing.T) {
 	}
 }
 
-func BenchmarkDecode(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		_, _, err := decode(bytes.NewReader(testAvif8), false, false)
-		if err != nil {
-			b.Error(err)
-		}
-	}
-}
-
 func BenchmarkDecodeDynamic(b *testing.B) {
 	if err := Dynamic(); err != nil {
 		fmt.Println(err)
@@ -286,15 +186,6 @@ func BenchmarkDecodeDynamic(b *testing.B) {
 	}
 }
 
-func BenchmarkDecodeConfig(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		_, _, err := decode(bytes.NewReader(testAvif8), true, false)
-		if err != nil {
-			b.Error(err)
-		}
-	}
-}
-
 func BenchmarkDecodeConfigDynamic(b *testing.B) {
 	if err := Dynamic(); err != nil {
 		fmt.Println(err)
@@ -303,20 +194,6 @@ func BenchmarkDecodeConfigDynamic(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		_, _, err := decodeDynamic(bytes.NewReader(testAvif8), true, false)
-		if err != nil {
-			b.Error(err)
-		}
-	}
-}
-
-func BenchmarkEncode(b *testing.B) {
-	img, err := Decode(bytes.NewReader(testAvif8))
-	if err != nil {
-		b.Fatal(err)
-	}
-
-	for i := 0; i < b.N; i++ {
-		err := encode(io.Discard, img, DefaultQuality, DefaultQuality, DefaultSpeed, image.YCbCrSubsampleRatio420)
 		if err != nil {
 			b.Error(err)
 		}
