@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	libname = "libavif.dylib"
+	libname = "/opt/homebrew/lib/libavif.dylib"
 )
 
 func loadLibrary() (uintptr, error) {
