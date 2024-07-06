@@ -136,11 +136,6 @@ func Encode(w io.Writer, m image.Image, o ...Options) error {
 	return nil
 }
 
-// Dynamic returns error (if there was any) during opening dynamic/shared library.
-func Dynamic() error {
-	return dynamicErr
-}
-
 const (
 	avifChromaUpsamplingFastest = 1
 

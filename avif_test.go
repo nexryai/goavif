@@ -3,7 +3,6 @@ package avif
 import (
 	"bytes"
 	_ "embed"
-	"fmt"
 	"image"
 	"image/jpeg"
 	"io"
@@ -20,12 +19,14 @@ var testAvif10 []byte
 //go:embed testdata/test.avifs
 var testAvifAnim []byte
 
-func TestDecodeDynamic(t *testing.T) {
-	if err := Dynamic(); err != nil {
-		fmt.Println(err)
-		t.Skip()
+func TestLoadLibrary(t *testing.T) {
+	_, err := loadLibrary()
+	if err != nil {
+		t.Fatal(err)
 	}
+}
 
+func TestDecodeDynamic(t *testing.T) {
 	img, _, err := decodeDynamic(bytes.NewReader(testAvif8), false, false)
 	if err != nil {
 		t.Fatal(err)
@@ -44,11 +45,6 @@ func TestDecodeDynamic(t *testing.T) {
 }
 
 func TestDecode10Dynamic(t *testing.T) {
-	if err := Dynamic(); err != nil {
-		fmt.Println(err)
-		t.Skip()
-	}
-
 	img, _, err := decodeDynamic(bytes.NewReader(testAvif10), false, false)
 	if err != nil {
 		t.Fatal(err)
@@ -67,11 +63,6 @@ func TestDecode10Dynamic(t *testing.T) {
 }
 
 func TestDecodeAnimDynamic(t *testing.T) {
-	if err := Dynamic(); err != nil {
-		fmt.Println(err)
-		t.Skip()
-	}
-
 	ret, _, err := decodeDynamic(bytes.NewReader(testAvifAnim), false, true)
 	if err != nil {
 		t.Fatal(err)
@@ -130,11 +121,6 @@ func TestImageDecodeAnim(t *testing.T) {
 }
 
 func TestDecodeConfigDynamic(t *testing.T) {
-	if err := Dynamic(); err != nil {
-		fmt.Println(err)
-		t.Skip()
-	}
-
 	_, cfg, err := decodeDynamic(bytes.NewReader(testAvif8), true, false)
 	if err != nil {
 		t.Fatal(err)
@@ -150,11 +136,6 @@ func TestDecodeConfigDynamic(t *testing.T) {
 }
 
 func TestEncodeDynamic(t *testing.T) {
-	if err := Dynamic(); err != nil {
-		fmt.Println(err)
-		t.Skip()
-	}
-
 	img, err := Decode(bytes.NewReader(testAvif8))
 	if err != nil {
 		t.Fatal(err)
@@ -173,11 +154,6 @@ func TestEncodeDynamic(t *testing.T) {
 }
 
 func BenchmarkDecodeDynamic(b *testing.B) {
-	if err := Dynamic(); err != nil {
-		fmt.Println(err)
-		b.Skip()
-	}
-
 	for i := 0; i < b.N; i++ {
 		_, _, err := decodeDynamic(bytes.NewReader(testAvif8), false, false)
 		if err != nil {
@@ -187,11 +163,6 @@ func BenchmarkDecodeDynamic(b *testing.B) {
 }
 
 func BenchmarkDecodeConfigDynamic(b *testing.B) {
-	if err := Dynamic(); err != nil {
-		fmt.Println(err)
-		b.Skip()
-	}
-
 	for i := 0; i < b.N; i++ {
 		_, _, err := decodeDynamic(bytes.NewReader(testAvif8), true, false)
 		if err != nil {
@@ -201,11 +172,6 @@ func BenchmarkDecodeConfigDynamic(b *testing.B) {
 }
 
 func BenchmarkEncodeDynamic(b *testing.B) {
-	if err := Dynamic(); err != nil {
-		fmt.Println(err)
-		b.Skip()
-	}
-
 	img, err := Decode(bytes.NewReader(testAvif8))
 	if err != nil {
 		b.Fatal(err)
