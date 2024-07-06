@@ -1,4 +1,4 @@
-module github.com/nexryai/avif
+module github.com/nexryai/goavif
 
 go 1.21
 
